@@ -60,6 +60,19 @@ import Layout from '../layouts/Layout.astro';
 		<section id="download" class="download">
 			<h2>Download</h2>
 			<p class="download-subtitle">Choose your platform</p>
+
+			<!-- Recommended download for current OS -->
+			<div class="recommended-download" id="recommended-download" style="display: none;">
+				<a href="" id="recommended-link" class="download-btn recommended">
+					<span id="recommended-icon"></span>
+					<div class="recommended-text">
+						<span class="recommended-label">Recommended for your system</span>
+						<span id="recommended-os"></span>
+					</div>
+				</a>
+			</div>
+
+			<p class="other-platforms-label" id="other-platforms-label" style="display: none;">Other platforms</p>
 			<div class="download-buttons">
 				<a href="https://github.com/astrum-chat/astrum/releases/latest" class="download-btn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -311,6 +324,42 @@ import Layout from '../layouts/Layout.astro';
 		opacity: 0.3;
 	}
 
+	/* Recommended Download */
+	.recommended-download {
+		margin-bottom: 32px;
+	}
+
+	.download-btn.recommended {
+		background: linear-gradient(135deg, var(--accent) 0%, #b9a3e3 100%);
+		color: var(--bg-primary);
+		padding: 20px 40px;
+		font-size: 1.1rem;
+		border: none;
+	}
+
+	.download-btn.recommended:hover {
+		background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+	}
+
+	.recommended-text {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+	}
+
+	.recommended-label {
+		font-size: 0.75rem;
+		opacity: 0.8;
+		font-weight: 400;
+	}
+
+	.other-platforms-label {
+		color: var(--text-secondary);
+		font-size: 0.9rem;
+		margin-bottom: 16px;
+	}
+
 	/* Responsive */
 	@media (max-width: 640px) {
 		.hero h1 {
@@ -335,3 +384,55 @@ import Layout from '../layouts/Layout.astro';
 		}
 	}
 </style>
+
+<script>
+	const macIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`;
+	const linuxIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139z"/></svg>`;
+	const windowsIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>`;
+
+	function detectOS() {
+		const userAgent = navigator.userAgent.toLowerCase();
+		const platform = navigator.platform.toLowerCase();
+
+		if (platform.includes('mac') || userAgent.includes('mac')) {
+			return 'macos';
+		} else if (platform.includes('win') || userAgent.includes('win')) {
+			return 'windows';
+		} else if (platform.includes('linux') || userAgent.includes('linux')) {
+			return 'linux';
+		}
+		return null;
+	}
+
+	function setupRecommendedDownload() {
+		const os = detectOS();
+		if (!os) return;
+
+		const recommendedDownload = document.getElementById('recommended-download');
+		const recommendedLink = document.getElementById('recommended-link');
+		const recommendedIcon = document.getElementById('recommended-icon');
+		const recommendedOs = document.getElementById('recommended-os');
+		const otherPlatformsLabel = document.getElementById('other-platforms-label');
+
+		if (!recommendedDownload || !recommendedLink || !recommendedIcon || !recommendedOs) return;
+
+		const config = {
+			macos: { icon: macIcon, name: 'macOS', url: 'https://github.com/astrum-chat/astrum/releases/latest' },
+			linux: { icon: linuxIcon, name: 'Linux', url: 'https://github.com/astrum-chat/astrum/releases/latest' },
+			windows: { icon: windowsIcon, name: 'Windows', url: 'https://github.com/astrum-chat/astrum/releases/latest' }
+		};
+
+		const { icon, name, url } = config[os];
+
+		recommendedIcon.innerHTML = icon;
+		recommendedOs.textContent = name;
+		recommendedLink.href = url;
+		recommendedDownload.style.display = 'flex';
+		recommendedDownload.style.justifyContent = 'center';
+		if (otherPlatformsLabel) {
+			otherPlatformsLabel.style.display = 'block';
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', setupRecommendedDownload);
+</script>
