@@ -65,10 +65,7 @@ import Layout from '../layouts/Layout.astro';
 			<div class="recommended-download" id="recommended-download" style="display: none;">
 				<a href="" id="recommended-link" class="download-btn recommended">
 					<span id="recommended-icon"></span>
-					<div class="recommended-text">
-						<span class="recommended-label">Recommended for your system</span>
-						<span id="recommended-os"></span>
-					</div>
+					<span id="recommended-text"></span>
 				</a>
 			</div>
 
@@ -332,26 +329,13 @@ import Layout from '../layouts/Layout.astro';
 	.download-btn.recommended {
 		background: linear-gradient(135deg, var(--accent) 0%, #b9a3e3 100%);
 		color: var(--bg-primary);
-		padding: 20px 40px;
+		padding: 24px 48px;
 		font-size: 1.1rem;
 		border: none;
 	}
 
 	.download-btn.recommended:hover {
 		background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-	}
-
-	.recommended-text {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 2px;
-	}
-
-	.recommended-label {
-		font-size: 0.75rem;
-		opacity: 0.8;
-		font-weight: 400;
 	}
 
 	.other-platforms-label {
@@ -411,10 +395,10 @@ import Layout from '../layouts/Layout.astro';
 		const recommendedDownload = document.getElementById('recommended-download');
 		const recommendedLink = document.getElementById('recommended-link');
 		const recommendedIcon = document.getElementById('recommended-icon');
-		const recommendedOs = document.getElementById('recommended-os');
+		const recommendedText = document.getElementById('recommended-text');
 		const otherPlatformsLabel = document.getElementById('other-platforms-label');
 
-		if (!recommendedDownload || !recommendedLink || !recommendedIcon || !recommendedOs) return;
+		if (!recommendedDownload || !recommendedLink || !recommendedIcon || !recommendedText) return;
 
 		const config = {
 			macos: { icon: macIcon, name: 'macOS', url: 'https://github.com/astrum-chat/astrum/releases/latest' },
@@ -425,7 +409,7 @@ import Layout from '../layouts/Layout.astro';
 		const { icon, name, url } = config[os];
 
 		recommendedIcon.innerHTML = icon;
-		recommendedOs.textContent = name;
+		recommendedText.textContent = `Recommended (${name})`;
 		recommendedLink.href = url;
 		recommendedDownload.style.display = 'flex';
 		recommendedDownload.style.justifyContent = 'center';
